@@ -1,6 +1,7 @@
 package com.openclassrooms.medilabo.service;
 
 import com.openclassrooms.medilabo.exception.PatientNotFoundException;
+import com.openclassrooms.medilabo.mapper.PatientMapper;
 import com.openclassrooms.medilabo.model.Patient;
 import com.openclassrooms.medilabo.model.PatientDto;
 import com.openclassrooms.medilabo.repository.PatientRepository;
@@ -15,6 +16,9 @@ public class MediLaboService {
     @Autowired
     private PatientRepository repository;
 
+    @Autowired
+    private PatientMapper patientMapper;
+
     public List<Patient> findAllPatient() {
         return repository.findAll();
     }
@@ -25,13 +29,7 @@ public class MediLaboService {
     }
 
     public Patient savePatient(PatientDto patientDto){
-        Patient patient = new Patient();
-        patient.setAddress(patientDto.getAddress());
-        patient.setGender(patientDto.getGender());
-        patient.setBirthDate(patientDto.getBirthDate());
-        patient.setLastName(patientDto.getLastName());
-        patient.setFirstName(patientDto.getFirstName());
-        patient.setPhoneNumber(patientDto.getPhoneNumber());
+        Patient patient = patientMapper.patientDtoToPatient(patientDto);
 
         return repository.save(patient);
     }
