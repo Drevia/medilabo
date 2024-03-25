@@ -3,18 +3,25 @@ package com.openclassrooms.medilabo.controller;
 import com.openclassrooms.medilabo.exception.PatientNotFoundException;
 import com.openclassrooms.medilabo.model.Patient;
 import com.openclassrooms.medilabo.model.PatientDto;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
 public interface MediLaboControllerSwagger {
 
+    @GetMapping("/patient")
     List<Patient> getAllPatient();
 
-    Patient getPatientById(String id) throws PatientNotFoundException;
+    @GetMapping("/patient/{id}")
+    Patient getPatientById(@PathVariable String id) throws PatientNotFoundException;
 
-    Patient createPatient(PatientDto patientDto);
+    @PostMapping("/patient")
+    Patient createPatient(@RequestBody PatientDto patientDto);
 
-    Patient updatePatient(PatientDto patientDto, String id) throws PatientNotFoundException;
+    @PatchMapping("/patient/{id}")
+    Patient updatePatient(@RequestBody PatientDto patientDto,@PathVariable String id) throws PatientNotFoundException;
 
-    void deletePatient(String id);
+    @DeleteMapping("/patient/{id}")
+    void deletePatient(@PathVariable String id);
 }

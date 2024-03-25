@@ -1,9 +1,6 @@
 package com.openclassrooms.medilabo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +11,8 @@ import java.time.OffsetDateTime;
 public class Patient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid")
+    @Column(name = "id")
     private String id;
     private String firstName;
     private String lastName;
