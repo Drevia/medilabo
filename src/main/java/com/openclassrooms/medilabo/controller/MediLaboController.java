@@ -21,9 +21,9 @@ public class MediLaboController implements MediLaboControllerSwagger {
 
     private final Logger logger = LoggerFactory.getLogger(MediLaboController.class);
 
-    public List<Patient> getAllPatient() {
+    public ResponseEntity<List<Patient>> getAllPatient() {
         logger.info("find all patient");
-        return mediLaboService.findAllPatient();
+        return ResponseEntity.ok(mediLaboService.findAllPatient());
     }
 
     public ResponseEntity<?> getPatientById(String id) {
@@ -35,12 +35,16 @@ public class MediLaboController implements MediLaboControllerSwagger {
         }
     }
 
-    public Patient createPatient(PatientDto patientDto) {
-        return mediLaboService.savePatient(patientDto);
+    public ResponseEntity<Patient> createPatient(PatientDto patientDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(mediLaboService.savePatient(patientDto));
     }
 
-    public Patient updatePatient(PatientDto patientDto, String id) throws PatientNotFoundException {
-        return mediLaboService.updatePatient(patientDto, id);
+    public ResponseEntity<?> updatePatient(PatientDto patientDto, String id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(mediLaboService.updatePatient(patientDto, id));
+        }catch (PatientNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     public void deletePatient(String id) {

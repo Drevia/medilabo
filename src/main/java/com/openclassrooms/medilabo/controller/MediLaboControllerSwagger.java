@@ -12,16 +12,16 @@ import java.util.List;
 public interface MediLaboControllerSwagger {
 
     @GetMapping("/patient")
-    List<Patient> getAllPatient();
+    ResponseEntity<List<Patient>> getAllPatient();
 
     @GetMapping("/patient/{id}")
     ResponseEntity<?> getPatientById(@PathVariable String id) throws PatientNotFoundException;
 
     @PostMapping("/patient")
-    Patient createPatient(@RequestBody PatientDto patientDto);
+    ResponseEntity<Patient> createPatient(@RequestBody PatientDto patientDto);
 
     @PatchMapping("/patient/{id}")
-    Patient updatePatient(@RequestBody PatientDto patientDto,@PathVariable String id) throws PatientNotFoundException;
+    ResponseEntity<?> updatePatient(@RequestBody PatientDto patientDto,@PathVariable String id) throws PatientNotFoundException;
 
     @DeleteMapping("/patient/{id}")
     void deletePatient(@PathVariable String id);
