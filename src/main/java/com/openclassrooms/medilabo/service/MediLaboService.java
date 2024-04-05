@@ -25,7 +25,7 @@ public class MediLaboService {
 
     public Patient findPatientById(String id) throws PatientNotFoundException {
         return repository.findById(id).orElseThrow(() ->
-                new PatientNotFoundException("Patient with id: "+ id +" not found"));
+                new PatientNotFoundException("Patient with id "+ id +" not found"));
     }
 
     public Patient savePatient(PatientDto patientDto){
