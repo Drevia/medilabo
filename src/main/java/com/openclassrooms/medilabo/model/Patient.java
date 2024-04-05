@@ -11,9 +11,9 @@ import java.time.OffsetDateTime;
 public class Patient {
 
     @Id
-    @GeneratedValue(generator = "uuid")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
-    private String id;
+    private Long id;
     private String firstName;
     private String lastName;
 
