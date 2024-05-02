@@ -15,8 +15,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,8 @@ class MediLaboServiceTest {
         PatientDto dto = new PatientDto();
         when(mapper.patientDtoToPatient(dto)).thenReturn(new Patient());
         when(repository.save(any())).thenReturn(new Patient());
-        assertDoesNotThrow(() -> service.savePatient(dto));
+        Patient patient = assertDoesNotThrow(() -> service.savePatient(dto));
+        assertNotNull(patient.getLastName());
     }
 
     @Test
