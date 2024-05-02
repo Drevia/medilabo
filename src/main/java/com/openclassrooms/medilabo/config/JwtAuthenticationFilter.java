@@ -16,18 +16,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+/*@Component
+@RequiredArgsConstructor*/
+public class JwtAuthenticationFilter /*extends OncePerRequestFilter */{
 
-    private final JwtService jwtService;
-    /*private final UserDetailsService userDetailsService;*/
+/*    private final JwtService jwtService;
+    *//*private final UserDetailsService userDetailsService;*//*
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-/*        final String authHeader = request.getHeader("Authorization");
+*//*        final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userName;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -47,6 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
-        filterChain.doFilter(request, response);*/
-    }
+        filterChain.doFilter(request, response);*//*
+    }*/
 }
