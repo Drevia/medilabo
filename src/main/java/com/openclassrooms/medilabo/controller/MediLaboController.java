@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public class MediLaboController implements MediLaboControllerSwagger {
         }
     }
 
-    public ResponseEntity<Patient> createPatient(PatientDto patientDto) {
+    public ResponseEntity<Patient> createPatient(@RequestBody PatientDto patientDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mediLaboService.savePatient(patientDto));
     }
 
-    public ResponseEntity<?> updatePatient(PatientDto patientDto, String id) {
+    public ResponseEntity<?> updatePatient(@RequestBody PatientDto patientDto, String id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(mediLaboService.updatePatient(patientDto, id));
         }catch (PatientNotFoundException e) {
