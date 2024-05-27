@@ -6,7 +6,10 @@ import com.openclassrooms.medilabo.model.Gender;
 import com.openclassrooms.medilabo.model.Patient;
 import com.openclassrooms.medilabo.model.PatientDto;
 import com.openclassrooms.medilabo.repository.PatientRepository;
+import com.openclassrooms.medilabo.service.JwtService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,13 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MedilaboControllerTest {
 
     @Autowired
@@ -39,45 +44,49 @@ class MedilaboControllerTest {
     @Autowired
     private PatientRepository repository;
 
-    @MockBean
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Autowired
     private ObjectMapper mapper;
 
-    @Test
-    @WithMockUser(value = "admin", authorities = "ROLE_ADMIN")
-    void createPatientOk() throws Exception {
+    @MockBean
+    private JwtService jwtService;
 
-        doNothing().when(jwtAuthenticationFilter).doFilterInternal(any(), any(), any());
+    @BeforeEach
+    void initMock() {
+        when(jwtService.extractUsername(any())).thenReturn("user");
+    }
+
+    @Test
+    void createPatientOk() throws Exception {
 
         PatientDto patient = buildPatient();
         String json = mapper.writeValueAsString(patient);
 
-        mockMvc.perform(post("/patient")
+        mockMvc.perform(post("/api/patient")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                         .header("Authorization", "Bearer jwt-test-token")).andDo(print())
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
-    @WithMockUser("admin")
     void retrieveAllPatientOk() throws Exception {
 
         Patient patient = new Patient();
         repository.save(patient);
 
-        mockMvc.perform(get("/patient")
+        mockMvc.perform(get("/api/patient")
+                        .header("Authorization", "Bearer jwt-test-token")
                         .with(csrf())).andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.*", hasSize(1)));
     }
 
     @Test
-    @WithMockUser("admin")
     void retrievePatientByIdOk() throws Exception {
-        mockMvc.perform(get("/patient/1")
+        Patient patient = new Patient();
+        repository.save(patient);
+
+        mockMvc.perform(get("/api/patient/1").header("Authorization", "Bearer jwt-test-token")
                 .with(csrf())).andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
