@@ -25,9 +25,8 @@ import java.time.OffsetDateTime;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -88,6 +87,27 @@ class MedilaboControllerTest {
 
         mockMvc.perform(get("/api/patient/1").header("Authorization", "Bearer jwt-test-token")
                 .with(csrf())).andDo(print())
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void updatePatientOk() throws Exception {
+        Patient patient = new Patient();
+        patient.setAddress("a");
+        patient.setFirstName("b");
+        patient.setLastName("c");
+        patient.setGender(Gender.MALE);
+        patient.setPhoneNumber("d");
+        patient.setBirthDate(OffsetDateTime.now());
+        repository.save(patient);
+
+        PatientDto newPatient = buildPatient();
+        String json = mapper.writeValueAsString(newPatient);
+
+        mockMvc.perform(patch("/api/patient/1").header("Authorization", "Bearer jwt-test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                        .with(csrf())).andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
