@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
@@ -17,8 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MediLaboServiceTest {
@@ -29,7 +29,7 @@ class MediLaboServiceTest {
     @InjectMocks
     MediLaboService service;
 
-    @Mock
+    @Spy
     PatientMapper mapper;
 
     @Test
@@ -51,10 +51,11 @@ class MediLaboServiceTest {
     @Test
     void savePatientOk() {
         PatientDto dto = new PatientDto();
-        when(mapper.patientDtoToPatient(dto)).thenReturn(new Patient());
+
         when(repository.save(any())).thenReturn(new Patient());
-        Patient patient = assertDoesNotThrow(() -> service.savePatient(dto));
-        assertNotNull(patient.getLastName());
+
+        assertDoesNotThrow(() -> service.savePatient(dto));
+        verify(repository, times(1)).save(any());
     }
 
     @Test
